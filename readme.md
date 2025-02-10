@@ -3,6 +3,8 @@
 
  - Gatherly is an Event management web app developed using MERN stack.
  - Allows event creation and management tools, attendees list with real time updates.
+
+  [Click here to visit live website](https://gatherly-event.vercel.app/)
   
   ## Tech stacks
   - Node.js
