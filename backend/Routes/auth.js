@@ -21,7 +21,7 @@ router.post('/register', async (req, res) => {
       };
       res.status(201).json({ userDetails, token, 'ok': true });
     } catch (error) {
-      res.status(500).json({message: error.message, 'ok': false});
+      res.status(500).json({message: "Something went wrong", 'ok': false});
     }
   });
   
@@ -29,13 +29,13 @@ router.post('/register', async (req, res) => {
     try {
       const { email, password } = req.body;
       const user = await User.findOne({ email });
-      if (!user) throw new Error('Invalid login credentials');
+      if (!user) return res.status(400).json({message: "Email doesn't exist", 'ok': false});
       const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) throw new Error('Invalid login credentials');
+      if (!isMatch) return res.status(400).json({message: "Wrong password", 'ok': false});
       const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
       res.send({ user, token, "ok": true });
     } catch (error) {
-      res.status(400).json({ message: error.message || "something went wrong", 'ok': false });
+      res.status(400).json({ message: "something went wrong", 'ok': false });
     }
   });
   module.exports = router;
