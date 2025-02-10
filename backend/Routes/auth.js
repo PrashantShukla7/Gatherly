@@ -35,7 +35,7 @@ router.post('/register', async (req, res) => {
       const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
       res.send({ user, token, "ok": true });
     } catch (error) {
-      res.status(400).json({ message: "something went wrong", 'ok': false });
+      res.status(400).json({ message: error.message || "something went wrong", 'ok': false });
     }
   });
   module.exports = router;
