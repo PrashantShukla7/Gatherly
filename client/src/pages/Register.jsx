@@ -13,6 +13,8 @@ import {
 import axios from "../utils/axios.js";
 import { MotionBox } from "./CreateEvent.jsx";
 import { Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { X } from "lucide-react";
 
 export default function Register() {
     document.title = "Register"
@@ -21,7 +23,8 @@ export default function Register() {
         handleSubmit,
         register,
         formState: { errors, isSubmitting },
-        setError
+        setError,
+        clearErrors
     } = useForm();
     const navigate = useNavigate();
 
@@ -44,6 +47,12 @@ export default function Register() {
         }
     }
 
+    useEffect(() => {
+        if (errors.server) {
+            clearErrors("server");
+        }
+    }, [errors, clearErrors]);
+
     return (
         <MotionBox
             initial={{ opacity: 0, y: 20 }}
@@ -61,15 +70,18 @@ export default function Register() {
                 Create New Account
             </Heading>
             {errors.server && (
-                <Alert status="error" mb={4}>
+                <Alert status="error" mb={4} position={"relative"}>
                     <AlertIcon />
                     {errors.server.message}
+                    <div className="absolute right-3 cursor-pointer" onClick={() => clearErrors("server")}>
+                        <X />   
+                    </div>
                 </Alert>
             )}
 
             <form onSubmit={handleSubmit(onSubmit)}>
                 <FormControl isInvalid={errors.name} isRequired>
-                    <FormLabel htmlFor="name">First name</FormLabel>
+                    <FormLabel htmlFor="name">Name</FormLabel>
                     <Input
                         id="name"
                         placeholder="name"
@@ -80,6 +92,7 @@ export default function Register() {
                                 message: "Minimum length should be 4",
                             },
                         })}
+                        onChange={() => clearErrors("server")}
                     />
 
                     <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
@@ -100,6 +113,7 @@ export default function Register() {
                               message: "Invalid email address",
                           },
                       })}
+                      onChange={() => clearErrors("server")}
                     />
                     <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
                 </FormControl>
@@ -118,6 +132,7 @@ export default function Register() {
                                 message: "Minimum length should be 4",
                             },
                         })}
+                        onChange={() => clearErrors("server")}
                     />
                     
                     <FormErrorMessage>

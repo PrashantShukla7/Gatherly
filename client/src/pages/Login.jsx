@@ -13,8 +13,9 @@ import {
 } from "@chakra-ui/react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
-import React from "react";
+import React, { useEffect } from "react";
 import { MotionBox } from "./CreateEvent.jsx";
+import { X } from "lucide-react";
 
 export default function Login() {
     document.title = "Login"
@@ -22,7 +23,8 @@ export default function Login() {
         handleSubmit,
         register,
         formState: { errors, isSubmitting },
-        setError
+        setError,
+        clearErrors
     } = useForm();
     const { login } = useAuth();
 
@@ -40,6 +42,12 @@ export default function Login() {
           setError("server", { type: "manual", message: error.response?.data?.message || "Invalid Credentials" });
         }
     }
+
+    useEffect(() => {
+        if (errors.server) {
+            clearErrors("server");
+        }
+    }, [errors, clearErrors]);
 
     return (
         <MotionBox
@@ -59,9 +67,12 @@ export default function Login() {
             </Heading>
 
             {errors.server && (
-                <Alert status="error" mb={4}>
+                <Alert status="error" mb={4} position={"relative"}>
                     <AlertIcon />
                     {errors.server.message}
+                    <div className="absolute right-3 cursor-pointer" onClick={() => clearErrors("server")}>
+                        <X />   
+                    </div>
                 </Alert>
             )}
 
@@ -73,11 +84,8 @@ export default function Login() {
                         placeholder="email"
                         {...register("email", {
                           required: "Email is required",
-                          pattern: {
-                              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$/,
-                              message: "Invalid email address",
-                          },
                       })}
+                      onChange={() => clearErrors("server")}
                     />
                     <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
                 </FormControl>
@@ -92,6 +100,7 @@ export default function Login() {
                         {...register("password", {
                           required: "Password is required",
                       })}
+                      onChange={() => clearErrors("server")}
                     />
                     <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
                 </FormControl>
